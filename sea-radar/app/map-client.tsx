@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import {
   INITIAL_MAP_CENTER,
@@ -8,10 +8,31 @@ import {
   OSM_ATTRIBUTION,
   OSM_TILE_URL,
 } from "./map-config";
-import { DEMO_VESSEL } from "./vessel";
+import { DEMO_VESSEL, type Vessel } from "./vessel";
+
+function formatSpeed(speed: number | null) {
+  return speed === null ? "Нет данных" : `${speed.toFixed(1).replace(/\.0$/, "")} уз`;
+}
+
+function formatCourse(course: number | null) {
+  return course === null ? "Нет данных" : `${Math.round(course) % 360}°`;
+}
+
+function formatTimestamp(timestamp: string) {
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) return "Нет данных";
+
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())} UTC`;
+}
+
+function formatSource(source: Vessel["source"]) {
+  return source === "demo" ? "Демонстрационные данные" : "AISStream";
+}
 
 export default function MapClient() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [selectedVessel, setSelectedVessel] = useState<Vessel | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -38,6 +59,7 @@ export default function MapClient() {
       icon: vesselIcon,
       title: DEMO_VESSEL.name ?? DEMO_VESSEL.id,
     }).addTo(map);
+    marker.on("click", () => setSelectedVessel(DEMO_VESSEL));
     const tooltip = document.createElement("span");
     tooltip.textContent = DEMO_VESSEL.id;
     marker.bindTooltip(tooltip);
@@ -56,7 +78,46 @@ export default function MapClient() {
   return (
     <div className="map-shell">
       <div ref={containerRef} className="map-container" role="region" aria-label="Карта пролива Дувр" />
-      <div className="map-source">Демонстрационные данные</div>
+      <div className="map-panel">
+        <div className="map-source">
+          {selectedVessel ? formatSource(selectedVessel.source) : "Демонстрационные данные"}
+        </div>
+        {selectedVessel && (
+          <section className="vessel-card" aria-label={`Карточка судна ${selectedVessel.id}`}>
+            <h2>Судно</h2>
+            <dl>
+              <div>
+                <dt>Идентификатор</dt>
+                <dd>{selectedVessel.id}</dd>
+              </div>
+              <div>
+                <dt>Название</dt>
+                <dd>{selectedVessel.name || "Нет данных"}</dd>
+              </div>
+              <div>
+                <dt>Координаты</dt>
+                <dd>{`${selectedVessel.lat.toFixed(5)}, ${selectedVessel.lon.toFixed(5)}`}</dd>
+              </div>
+              <div>
+                <dt>Скорость</dt>
+                <dd>{formatSpeed(selectedVessel.speedKnots)}</dd>
+              </div>
+              <div>
+                <dt>Курс</dt>
+                <dd>{formatCourse(selectedVessel.courseDeg)}</dd>
+              </div>
+              <div>
+                <dt>Время сообщения</dt>
+                <dd>{formatTimestamp(selectedVessel.timestamp)}</dd>
+              </div>
+              <div>
+                <dt>Источник</dt>
+                <dd>{formatSource(selectedVessel.source)}</dd>
+              </div>
+            </dl>
+          </section>
+        )}
+      </div>
     </div>
   );
 }

@@ -37,19 +37,58 @@ body {
   background: #e7edf0;
 }
 
-.map-source {
+.map-panel {
   position: absolute;
   z-index: 1000;
   top: 12px;
   left: 50px;
-  padding: 8px 12px;
+  display: flex;
+  width: min(320px, calc(100vw - 70px));
+  flex-direction: column;
+  gap: 8px;
+}
+
+.map-source,
+.vessel-card {
+  padding: 10px 12px;
   border: 1px solid #b8c5cc;
   border-radius: 4px;
-  background: rgb(255 255 255 / 95%);
+  background: rgb(255 255 255 / 96%);
   color: #17252d;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 25%);
+}
+
+.map-source {
   font-size: 14px;
   font-weight: 600;
-  box-shadow: 0 1px 5px rgb(0 0 0 / 25%);
+}
+
+.vessel-card h2 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.vessel-card dl {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.vessel-card dl > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) minmax(0, 1.2fr);
+  gap: 8px;
+}
+
+.vessel-card dt {
+  color: #526b78;
+}
+
+.vessel-card dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
 }
 
 .vessel-icon {
