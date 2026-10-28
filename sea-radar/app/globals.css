@@ -17,13 +17,77 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.map-container,
+.map-shell,
 .map-loading {
   width: 100%;
   height: 100vh;
   height: 100dvh;
 }
 
+.map-shell {
+  position: relative;
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+}
+
 .map-loading {
   background: #e7edf0;
+}
+
+.map-source {
+  position: absolute;
+  z-index: 1000;
+  top: 12px;
+  left: 50px;
+  padding: 8px 12px;
+  border: 1px solid #b8c5cc;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 95%);
+  color: #17252d;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 25%);
+}
+
+.vessel-icon {
+  border: 0;
+  background: transparent;
+}
+
+.vessel-marker {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+}
+
+.vessel-marker--course svg {
+  width: 28px;
+  height: 28px;
+  overflow: visible;
+  fill: #d7472f;
+  stroke: #fff;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 55%));
+}
+
+.vessel-marker--neutral::before {
+  width: 16px;
+  height: 16px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #526b78;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 55%);
+  content: "";
+}
+
+.leaflet-tooltip {
+  border: 1px solid #9aaab2;
+  border-radius: 3px;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 25%);
+  font-size: 13px;
 }
